@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>麥塊AI世界冒險王(1)知識大挑戰</title>
+  <style>
+    :root {
+      --deep-blue: #06183b;
+      --deep-blue-2: #0b2d66;
+      --bright-blue: #13b7ff;
+      --bright-blue-2: #75dcff;
+      --red: #ff334f;
+      --red-dark: #9b1730;
+      --gold: #ffd34d;
+      --gold-2: #ffb703;
+      --white: #ffffff;
+      --soft-white: #edf8ff;
+      --green: #2bd97f;
+      --green-dark: #0b8f53;
+      --pink: #ffb7d5;
+      --pink-2: #ffe3ef;
+      --ink: #13223f;
+      --card: rgba(255, 255, 255, 0.94);
+      --shadow: rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+      --pixel-border: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Arial, sans-serif;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 10% 16%, rgba(255, 183, 213, 0.5) 0 5px, transparent 6px),
+        radial-gradient(circle at 78% 10%, rgba(255, 227, 239, 0.38) 0 7px, transparent 8px),
+        radial-gradient(circle at 36% 85%, rgba(255, 211, 77, 0.22) 0 8px, transparent 9px),
+        linear-gradient(135deg, rgba(24, 184, 255, 0.18) 25%, transparent 25%) 0 0 / 48px 48px,
+        linear-gradient(225deg, rgba(255, 183, 213, 0.17) 25%, transparent 25%) 0 0 / 48px 48px,
+        linear-gradient(160deg, #061636 0%, #09285b 44%, #12346d 72%, #061636 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      background:
+        repeating-linear-gradient(0deg, transparent 0 31px, rgba(255, 255, 255, 0.045) 32px),
+        repeating-linear-gradient(90deg, transparent 0 31px, rgba(255, 255, 255, 0.035) 32px);
+      mix-blend-mode: screen;
+    }
+
+    body::after {
+      background:
+        radial-gradient(circle at 8% 78%, rgba(255, 183, 213, 0.26), transparent 19%),
+        radial-gradient(circle at 88% 28%, rgba(24, 184, 255, 0.22), transparent 20%),
+        radial-gradient(circle at 55% 8%, rgba(255, 211, 77, 0.18), transparent 18%);
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1100px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 46px;
+    }
+
+    .hero-card,
+    .status-card,
+    .quiz-card {
+      position: relative;
+      border-radius: var(--radius);
+      border: var(--pixel-border) solid rgba(255, 255, 255, 0.9);
+      box-shadow:
+        0 16px 0 rgba(0, 0, 0, 0.18),
+        0 22px 42px rgba(0, 0, 0, 0.34),
+        inset 0 0 0 3px rgba(255, 211, 77, 0.3);
+      overflow: hidden;
+    }
+
+    .hero-card {
+      background:
+        linear-gradient(135deg, rgba(7, 26, 61, 0.97), rgba(13, 47, 99, 0.93)),
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.08) 0 8px, transparent 8px 16px);
+      padding: clamp(20px, 4vw, 34px);
+      margin-bottom: 18px;
+    }
+
+    .hero-card::before,
+    .quiz-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 0 48%, rgba(255, 255, 255, 0.08) 49% 51%, transparent 52%),
+        linear-gradient(0deg, transparent 0 48%, rgba(255, 255, 255, 0.06) 49% 51%, transparent 52%);
+      background-size: 42px 42px;
+      opacity: 0.32;
+      pointer-events: none;
+    }
+
+    .hero-content,
+    .quiz-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tag-pill {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      color: var(--deep-blue);
+      background: linear-gradient(135deg, var(--gold), #fff3ac);
+      border: 3px solid var(--white);
+      box-shadow: 0 6px 0 rgba(91, 58, 0, 0.35);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 950;
+      font-size: clamp(0.9rem, 1.8vw, 1.06rem);
+    }
+
+    h1 {
+      position: relative;
+      margin: 18px 0 10px;
+      line-height: 1.08;
+      letter-spacing: 1px;
+      font-size: clamp(2.05rem, 6vw, 4.25rem);
+      text-shadow:
+        4px 4px 0 #00122d,
+        7px 7px 0 rgba(255, 51, 79, 0.8),
+        0 0 20px rgba(24, 184, 255, 0.55);
+    }
+
+    .subtitle {
+      position: relative;
+      margin: 0;
+      color: var(--soft-white);
+      font-size: clamp(1.04rem, 2.35vw, 1.36rem);
+      line-height: 1.7;
+      font-weight: 750;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .btn {
+      cursor: pointer;
+      border: 0;
+      border-radius: 18px;
+      padding: 14px 18px;
+      color: var(--white);
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      font-weight: 950;
+      letter-spacing: 0.8px;
+      box-shadow:
+        0 7px 0 rgba(0, 0, 0, 0.32),
+        inset 0 -4px 0 rgba(0, 0, 0, 0.18),
+        inset 0 2px 0 rgba(255, 255, 255, 0.25);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+      min-height: 56px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow:
+        0 9px 0 rgba(0, 0, 0, 0.32),
+        inset 0 -4px 0 rgba(0, 0, 0, 0.18),
+        inset 0 2px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .btn:active {
+      transform: translateY(5px);
+      box-shadow:
+        0 2px 0 rgba(0, 0, 0, 0.32),
+        inset 0 -4px 0 rgba(0, 0, 0, 0.18);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--bright-blue), #006eff);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #182033;
+    }
+
+    .btn-red {
+      background: linear-gradient(135deg, var(--red), #d91c42);
+    }
+
+    .status-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.5fr;
+      gap: 12px;
+      margin: 18px 0;
+      padding: 16px;
+      background: rgba(7, 26, 61, 0.9);
+    }
+
+    .stat {
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--deep-blue);
+      border: 3px solid rgba(24, 184, 255, 0.9);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: inset -5px -5px 0 rgba(0, 0, 0, 0.07);
+    }
+
+    .stat small {
+      display: block;
+      color: #496385;
+      font-size: 0.88rem;
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: clamp(1.45rem, 4vw, 2.1rem);
+      line-height: 1;
+      font-weight: 1000;
+    }
+
+    .progress-wrap {
+      align-self: center;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--white);
+      font-weight: 900;
+    }
+
+    .progress {
+      height: 24px;
+      padding: 4px;
+      background: #031025;
+      border: 3px solid rgba(255, 255, 255, 0.8);
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 2px rgba(24, 184, 255, 0.22);
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.34) 0 9px, transparent 9px 18px),
+        linear-gradient(90deg, var(--bright-blue), var(--gold));
+      transition: width 0.35s ease;
+    }
+
+    .quiz-card {
+      background: var(--card);
+      color: var(--ink);
+      padding: clamp(16px, 3vw, 30px);
+      min-height: 450px;
+    }
+
+    .question-top {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 9px 13px;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--deep-blue-2), var(--bright-blue));
+      font-weight: 950;
+      border: 3px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.22);
+    }
+
+    .clue-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 16px;
+      padding: 9px 13px;
+      color: var(--deep-blue);
+      background: linear-gradient(135deg, var(--pink-2), var(--gold));
+      font-weight: 950;
+      border: 3px solid rgba(7, 26, 61, 0.75);
+    }
+
+    .question {
+      position: relative;
+      margin: 0 0 18px;
+      padding: 20px;
+      border-radius: 20px;
+      border: 4px solid var(--deep-blue);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(238, 248, 255, 0.98));
+      box-shadow: inset -7px -7px 0 rgba(7, 26, 61, 0.08);
+      font-size: clamp(1.22rem, 3.2vw, 2rem);
+      line-height: 1.45;
+      font-weight: 950;
+    }
+
+    .options {
+      position: relative;
+      display: grid;
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .option-btn {
+      width: 100%;
+      min-height: 76px;
+      text-align: left;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      border: 4px solid var(--deep-blue);
+      border-radius: 20px;
+      padding: 14px 16px;
+      color: var(--deep-blue);
+      background:
+        linear-gradient(180deg, #ffffff, #eaf7ff);
+      font-size: clamp(1.08rem, 2.8vw, 1.42rem);
+      font-weight: 900;
+      box-shadow:
+        0 8px 0 rgba(7, 26, 61, 0.25),
+        inset -6px -6px 0 rgba(24, 184, 255, 0.12);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+
+    .option-btn:not(:disabled):hover {
+      transform: translateY(-2px) scale(1.005);
+      background: linear-gradient(180deg, #ffffff, #d8f3ff);
+      box-shadow:
+        0 10px 0 rgba(7, 26, 61, 0.25),
+        0 0 0 4px rgba(24, 184, 255, 0.2),
+        inset -6px -6px 0 rgba(24, 184, 255, 0.12);
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+    }
+
+    .letter {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      border: 3px solid currentColor;
+      background: rgba(255, 255, 255, 0.82);
+      font-size: 1.24rem;
+      font-weight: 1000;
+      flex: 0 0 auto;
+    }
+
+    .option-btn.correct {
+      border-color: var(--gold-2);
+      color: #132818;
+      background:
+        linear-gradient(180deg, #fff5b8, #c9ffd8);
+      box-shadow:
+        0 8px 0 rgba(17, 101, 58, 0.38),
+        0 0 22px rgba(255, 211, 77, 0.6),
+        inset -6px -6px 0 rgba(40, 209, 124, 0.18);
+      animation: popCorrect 0.45s ease both;
+    }
+
+    .option-btn.wrong {
+      border-color: var(--red-dark);
+      color: #ffffff;
+      background:
+        linear-gradient(180deg, var(--red), var(--red-dark));
+      box-shadow:
+        0 8px 0 rgba(80, 0, 14, 0.4),
+        0 0 18px rgba(255, 51, 79, 0.42),
+        inset -6px -6px 0 rgba(0, 0, 0, 0.16);
+      animation: shakeWrong 0.45s ease both;
+    }
+
+    .option-btn.dimmed {
+      opacity: 0.7;
+      transform: none;
+      box-shadow:
+        0 5px 0 rgba(7, 26, 61, 0.18),
+        inset -6px -6px 0 rgba(24, 184, 255, 0.08);
+    }
+
+    .feedback {
+      display: none;
+      position: relative;
+      margin-top: 18px;
+      border-radius: 20px;
+      border: 4px solid var(--deep-blue);
+      background:
+        linear-gradient(135deg, rgba(7, 26, 61, 0.96), rgba(13, 47, 99, 0.96));
+      color: var(--white);
+      padding: 18px;
+      box-shadow:
+        inset 0 0 0 3px rgba(255, 211, 77, 0.22),
+        0 8px 0 rgba(0, 0, 0, 0.24);
+    }
+
+    .feedback.show {
+      display: block;
+      animation: riseIn 0.35s ease both;
+    }
+
+    .feedback h3 {
+      margin: 0 0 10px;
+      font-size: clamp(1.16rem, 2.8vw, 1.5rem);
+      color: var(--gold);
+    }
+
+    .feedback p {
+      margin: 8px 0;
+      font-size: clamp(1rem, 2.4vw, 1.18rem);
+      line-height: 1.65;
+      font-weight: 750;
+    }
+
+    .feedback .answer-line {
+      color: #d7f7ff;
+      font-weight: 950;
+    }
+
+    .next-area {
+      display: none;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .next-area.show {
+      display: flex;
+    }
+
+    .start-screen,
+    .result-screen {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 420px;
+      text-align: center;
+      padding: 18px;
+    }
+
+    .start-box,
+    .result-box {
+      width: min(780px, 100%);
+      border: 4px solid var(--deep-blue);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(232,247,255,0.96));
+      padding: clamp(18px, 4vw, 34px);
+      box-shadow: inset -8px -8px 0 rgba(7, 26, 61, 0.08);
+    }
+
+    .start-box h2,
+    .result-box h2 {
+      margin: 0 0 12px;
+      color: var(--deep-blue);
+      font-size: clamp(1.65rem, 4.6vw, 2.8rem);
+      text-shadow: 2px 2px 0 rgba(255, 211, 77, 0.45);
+    }
+
+    .start-box p,
+    .result-box p {
+      margin: 10px auto;
+      max-width: 680px;
+      color: #344766;
+      font-size: clamp(1.02rem, 2.6vw, 1.25rem);
+      line-height: 1.65;
+      font-weight: 800;
+    }
+
+    .result-score {
+      display: inline-grid;
+      place-items: center;
+      width: min(260px, 70vw);
+      aspect-ratio: 1;
+      margin: 18px auto;
+      border-radius: 30px;
+      border: 6px solid var(--deep-blue);
+      color: var(--deep-blue);
+      background:
+        linear-gradient(135deg, var(--gold), #fff4b5 55%, var(--bright-blue-2));
+      box-shadow:
+        0 12px 0 rgba(7, 26, 61, 0.24),
+        inset -10px -10px 0 rgba(0, 0, 0, 0.08);
+      font-weight: 1000;
+    }
+
+    .result-score span {
+      display: block;
+      font-size: clamp(3rem, 12vw, 5.5rem);
+      line-height: 0.9;
+    }
+
+    .result-score small {
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      color: #25405e;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 0.95rem;
+      font-weight: 750;
+    }
+
+    @keyframes popCorrect {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.035); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shakeWrong {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 880px) {
+      .status-card {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .progress-wrap {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: min(100% - 18px, 1100px);
+        padding-top: 12px;
+      }
+
+      .hero-card,
+      .quiz-card {
+        border-width: 3px;
+        border-radius: 18px;
+      }
+
+      .hero-card {
+        padding: 18px;
+      }
+
+      .tag-pill {
+        border-radius: 18px;
+      }
+
+      .status-card {
+        grid-template-columns: 1fr;
+      }
+
+      .progress-wrap {
+        grid-column: auto;
+      }
+
+      .status-card {
+        padding: 12px;
+      }
+
+      .question-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .option-btn {
+        min-height: 68px;
+        grid-template-columns: 40px 1fr;
+        padding: 12px;
+        gap: 10px;
+        border-width: 3px;
+      }
+
+      .letter {
+        width: 40px;
+        height: 40px;
+      }
+
+      .next-area,
+      .controls {
+        justify-content: stretch;
+      }
+
+      .btn,
+      .next-area .btn {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="hero-card" aria-label="網站標題區">
+      <div class="hero-content">
+        <div class="tag-pill">凱瑟琳・強森 / 霍華德・卡特 / 諾貝爾 / 愛因斯坦 / 萊特兄弟 5位名人</div>
+        <h1>麥塊AI世界冒險王(1)<br />知識大挑戰</h1>
+        <p class="subtitle">
+          題目以五位名人的事蹟、典故與冷知識為主，每輪隨機抽出 10 題基礎題與 5 題進階題。
+        </p>
+
+        <div class="controls">
+          <button class="btn btn-primary" id="startBtn">開始挑戰</button>
+          <button class="btn btn-gold" id="restartTopBtn">重新挑戰</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="status-card" aria-label="挑戰進度">
+      <div class="stat">
+        <small>目前關卡</small>
+        <strong id="questionCounter">0 / 15</strong>
+      </div>
+      <div class="stat">
+        <small>目前分數</small>
+        <strong id="scoreCounter">0</strong>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>線索破解進度</span>
+          <span id="progressText">0%</span>
+        </div>
+        <div class="progress" aria-label="進度條">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quiz-card" id="quizCard" aria-live="polite">
+      <div class="quiz-inner">
+        <div class="start-screen" id="startScreen">
+          <div class="start-box">
+            <h2>準備進入名人知識任務</h2>
+            <p>
+              前 10 題為基礎題，後 5 題為進階題。每題只有一次作答機會，答對加 10 分，滿分 150 分。
+            </p>
+            <button class="btn btn-primary" id="startBtn2">開始第一個挑戰</button>
+          </div>
+        </div>
+
+        <div class="question-screen hidden" id="questionScreen">
+          <div class="question-top">
+            <span class="level-badge" id="levelBadge">基礎題庫</span>
+            <span class="clue-badge" id="clueBadge">線索 1 / 15</span>
+          </div>
+
+          <h2 class="question" id="questionText">題目載入中</h2>
+
+          <div class="options" id="optionsBox"></div>
+
+          <section class="feedback" id="feedbackPanel">
+            <h3 id="feedbackTitle">解答說明與線索</h3>
+            <p class="answer-line" id="answerLine"></p>
+            <p id="explainText"></p>
+          </section>
+
+          <div class="next-area" id="nextArea">
+            <button class="btn btn-gold" id="nextBtn">下一個挑戰</button>
+          </div>
+        </div>
+
+        <div class="result-screen hidden" id="resultScreen">
+          <div class="result-box">
+            <h2>挑戰結算完成</h2>
+            <div class="result-score">
+              <div>
+                <span id="finalScore">0</span>
+                <small>/ 150 分</small>
+              </div>
+            </div>
+            <p id="finalComment">評語載入中</p>
+            <button class="btn btn-red" id="restartBtn">重新挑戰</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">社團法人台灣資訊教育發展協會</p>
+  </main>
+
+  <script>
+    /*
+      ==========================================================
+      題庫修改區
+      ----------------------------------------------------------
+      若要更換題目，只需修改下面兩個陣列：
+      1. easyQuestions：基礎題庫，共 35 題
+      2. hardQuestions：進階題庫，共 15 題
+
+      出題者只要把正確答案固定放在 o 陣列第 0 個位置，
+      並把 a 設為 0 即可。
+      網頁執行時會自動洗牌 A / B / C 選項，
+      正確答案判斷與提示會依照洗牌後的位置重新計算。
+      ==========================================================
+    */
+
+    const easyQuestions = [
+      {
+            "q": "萊特兄弟出生與成長的國家是哪一個？",
+            "o": [
+                  "美國",
+                  "瑞典",
+                  "埃及"
+            ],
+            "a": 0,
+            "e": "萊特兄弟是美國俄亥俄州代頓出身的兄弟檔，後來成為航空史上的重要人物。"
+      },
+      {
+            "q": "萊特兄弟中的哥哥是誰？",
+            "o": [
+                  "威爾伯・萊特",
+                  "奧維爾・萊特",
+                  "阿爾弗雷德・諾貝爾"
+            ],
+            "a": 0,
+            "e": "威爾伯・萊特是哥哥，奧維爾・萊特是弟弟。兩人共同投入飛行研究。"
+      },
+      {
+            "q": "萊特兄弟原本經營哪一種店鋪？",
+            "o": [
+                  "腳踏車店",
+                  "鐘錶店",
+                  "考古商店"
+            ],
+            "a": 0,
+            "e": "萊特兄弟經營腳踏車店，從修理與製造腳踏車中學到機械、平衡與控制的觀念。"
+      },
+      {
+            "q": "萊特兄弟第一架成功飛行的動力飛機常被稱為什麼？",
+            "o": [
+                  "飛行者一號",
+                  "阿波羅一號",
+                  "金色王座號"
+            ],
+            "a": 0,
+            "e": "1903 年，萊特兄弟的飛行者一號在北卡羅來納州小鷹鎮附近完成歷史性飛行。"
+      },
+      {
+            "q": "1903 年第一次成功動力飛行時，負責駕駛的是誰？",
+            "o": [
+                  "奧維爾・萊特",
+                  "威爾伯・萊特",
+                  "霍華德・卡特"
+            ],
+            "a": 0,
+            "e": "1903 年 12 月 17 日，弟弟奧維爾駕駛飛行者一號完成第一次成功動力飛行。"
+      },
+      {
+            "q": "萊特兄弟研究飛行時，最重視哪一項關鍵問題？",
+            "o": [
+                  "如何穩定控制飛機",
+                  "如何讓飛機變成金色",
+                  "如何在飛機上考古"
+            ],
+            "a": 0,
+            "e": "萊特兄弟的關鍵突破不是只有讓飛機離地，而是讓飛行器能被穩定控制。"
+      },
+      {
+            "q": "萊特兄弟自製風洞的主要目的，是為了測試什麼？",
+            "o": [
+                  "機翼形狀與升力",
+                  "古墓牆壁顏色",
+                  "炸藥包裝方式"
+            ],
+            "a": 0,
+            "e": "他們用風洞測試不同機翼模型，取得更可靠的數據，進一步改良飛行器。"
+      },
+      {
+            "q": "凱瑟琳・強森最著名的專長是什麼？",
+            "o": [
+                  "數學計算",
+                  "古文物修復",
+                  "炸藥製造"
+            ],
+            "a": 0,
+            "e": "凱瑟琳・強森以卓越的數學能力聞名，特別是在太空任務軌道計算上貢獻很大。"
+      },
+      {
+            "q": "凱瑟琳・強森曾任職的 NACA 後來成為哪個機構的重要前身？",
+            "o": [
+                  "NASA",
+                  "FBI",
+                  "WHO"
+            ],
+            "a": 0,
+            "e": "NACA 是美國國家航空諮詢委員會，後來成為 NASA 的重要前身。"
+      },
+      {
+            "q": "凱瑟琳・強森協助計算的工作，主要和哪一類任務有關？",
+            "o": [
+                  "太空飛行任務",
+                  "古埃及陵墓修復",
+                  "瑞典文學出版"
+            ],
+            "a": 0,
+            "e": "她參與美國早期太空飛行任務的軌道、發射與返回相關計算。"
+      },
+      {
+            "q": "美國太空人約翰・葛倫曾要求誰確認電腦計算結果？",
+            "o": [
+                  "凱瑟琳・強森",
+                  "諾貝爾",
+                  "愛因斯坦"
+            ],
+            "a": 0,
+            "e": "約翰・葛倫非常信任凱瑟琳・強森的計算，任務前要求她再次確認電腦結果。"
+      },
+      {
+            "q": "凱瑟琳・強森小時候最明顯的特質之一是什麼？",
+            "o": [
+                  "對數字非常有興趣",
+                  "害怕所有數學題",
+                  "只喜歡考古探險"
+            ],
+            "a": 0,
+            "e": "她從小就喜歡數東西，對數字與規律充滿好奇。"
+      },
+      {
+            "q": "凱瑟琳・強森的故事常被用來代表哪一種精神？",
+            "o": [
+                  "用專業能力突破限制",
+                  "用運氣完成任務",
+                  "不需要學習也能成功"
+            ],
+            "a": 0,
+            "e": "她在充滿限制的時代，以專業、努力與精準能力證明自己的價值。"
+      },
+      {
+            "q": "凱瑟琳・強森曾參與哪一類歷史性太空計畫的相關計算？",
+            "o": [
+                  "登月計畫",
+                  "圖坦卡門挖掘計畫",
+                  "諾貝爾獎頒獎典禮設計"
+            ],
+            "a": 0,
+            "e": "她的計算工作與美國早期載人太空飛行、繞地球任務與登月相關任務有關。"
+      },
+      {
+            "q": "阿爾弗雷德・諾貝爾出生於哪一個國家？",
+            "o": [
+                  "瑞典",
+                  "美國",
+                  "埃及"
+            ],
+            "a": 0,
+            "e": "諾貝爾出生於瑞典斯德哥爾摩，是發明家、工程師、企業家，也熱愛文學。"
+      },
+      {
+            "q": "諾貝爾最知名的發明之一是什麼？",
+            "o": [
+                  "炸藥",
+                  "動力飛機",
+                  "相對論"
+            ],
+            "a": 0,
+            "e": "諾貝爾發明的 dynamite 讓爆破工程更容易控制，在工程建設與礦業中影響深遠。"
+      },
+      {
+            "q": "諾貝爾的父親主要從事哪一類工作？",
+            "o": [
+                  "工程與發明相關工作",
+                  "考古挖掘工作",
+                  "天文觀測工作"
+            ],
+            "a": 0,
+            "e": "諾貝爾的父親伊曼紐爾・諾貝爾是工程師與發明家，對諾貝爾的成長影響很深。"
+      },
+      {
+            "q": "諾貝爾獎的設立來自諾貝爾的哪一份文件？",
+            "o": [
+                  "遺囑",
+                  "旅行日記",
+                  "飛行紀錄表"
+            ],
+            "a": 0,
+            "e": "諾貝爾在遺囑中決定把大部分財產用於設立獎項，表揚對人類有重大貢獻的人。"
+      },
+      {
+            "q": "諾貝爾除了科學與工程，也對哪一個領域很有興趣？",
+            "o": [
+                  "文學",
+                  "職業籃球",
+                  "海盜尋寶"
+            ],
+            "a": 0,
+            "e": "諾貝爾會寫詩與劇本，也精通多種語言，展現跨領域的才華。"
+      },
+      {
+            "q": "諾貝爾一生取得大量專利，這代表他具備哪種特質？",
+            "o": [
+                  "持續發明與實驗",
+                  "只做一次就停止",
+                  "完全不關心技術"
+            ],
+            "a": 0,
+            "e": "諾貝爾一生擁有許多專利，顯示他長期投入技術研發與創新。"
+      },
+      {
+            "q": "諾貝爾獎最核心的精神是什麼？",
+            "o": [
+                  "表揚對人類有貢獻的人",
+                  "鼓勵破壞越大越好",
+                  "只獎勵有名的人"
+            ],
+            "a": 0,
+            "e": "諾貝爾獎重視對人類社會、科學、文化與和平的貢獻。"
+      },
+      {
+            "q": "阿爾伯特・愛因斯坦出生於哪一個國家？",
+            "o": [
+                  "德國",
+                  "瑞典",
+                  "埃及"
+            ],
+            "a": 0,
+            "e": "愛因斯坦出生於德國烏爾姆，後來在瑞士、美國等地生活與工作。"
+      },
+      {
+            "q": "愛因斯坦最常被連結到哪一個重要理論？",
+            "o": [
+                  "相對論",
+                  "考古分類法",
+                  "三軸飛行控制"
+            ],
+            "a": 0,
+            "e": "相對論改變人類理解時間、空間、重力與能量的方式。"
+      },
+      {
+            "q": "愛因斯坦曾在瑞士哪一類機構工作？",
+            "o": [
+                  "專利局",
+                  "金字塔管理局",
+                  "航空維修站"
+            ],
+            "a": 0,
+            "e": "愛因斯坦曾在瑞士專利局工作，白天審查發明申請，業餘時間持續研究物理。"
+      },
+      {
+            "q": "1905 年常被稱為愛因斯坦的什麼年？",
+            "o": [
+                  "奇蹟年",
+                  "考古年",
+                  "飛行年"
+            ],
+            "a": 0,
+            "e": "1905 年，愛因斯坦發表多篇重要論文，對現代物理產生巨大影響。"
+      },
+      {
+            "q": "愛因斯坦獲得 1921 年諾貝爾物理學獎，主要因為哪項研究？",
+            "o": [
+                  "光電效應",
+                  "飛機製造",
+                  "古墓開挖"
+            ],
+            "a": 0,
+            "e": "愛因斯坦因解釋光電效應而獲得諾貝爾物理學獎，這項研究影響後來的量子理論與光電科技。"
+      },
+      {
+            "q": "愛因斯坦喜歡演奏哪一種樂器？",
+            "o": [
+                  "小提琴",
+                  "大鼓",
+                  "長號"
+            ],
+            "a": 0,
+            "e": "愛因斯坦喜歡拉小提琴，音樂也是他思考與放鬆的重要方式。"
+      },
+      {
+            "q": "愛因斯坦常使用想像情境來思考科學問題，這種方法稱為什麼？",
+            "o": [
+                  "思想實驗",
+                  "實地考古",
+                  "專利拍賣"
+            ],
+            "a": 0,
+            "e": "思想實驗是用假想情境進行推理，幫助理解抽象科學概念。"
+      },
+      {
+            "q": "霍華德・卡特最著名的考古發現與哪位古埃及法老有關？",
+            "o": [
+                  "圖坦卡門",
+                  "凱撒",
+                  "拿破崙"
+            ],
+            "a": 0,
+            "e": "卡特發現圖坦卡門陵墓，是埃及考古史上最著名的發現之一。"
+      },
+      {
+            "q": "霍華德・卡特年輕時因哪一項能力出色而進入埃及考古工作？",
+            "o": [
+                  "繪畫與記錄能力",
+                  "飛機駕駛能力",
+                  "化學爆破能力"
+            ],
+            "a": 0,
+            "e": "卡特擅長繪畫，能仔細臨摹與記錄古埃及壁畫和文物。"
+      },
+      {
+            "q": "霍華德・卡特與哪位贊助者合作，最後發現圖坦卡門陵墓？",
+            "o": [
+                  "卡納封勳爵",
+                  "約翰・葛倫",
+                  "威爾伯・萊特"
+            ],
+            "a": 0,
+            "e": "卡特與卡納封勳爵合作多年，最後在帝王谷發現圖坦卡門陵墓。"
+      },
+      {
+            "q": "圖坦卡門陵墓位於埃及哪個著名地區？",
+            "o": [
+                  "帝王谷",
+                  "小鷹鎮",
+                  "斯德哥爾摩"
+            ],
+            "a": 0,
+            "e": "圖坦卡門陵墓位於埃及帝王谷，該地區是許多古埃及王室陵墓所在地。"
+      },
+      {
+            "q": "霍華德・卡特發現陵墓入口後，最重要的工作之一是什麼？",
+            "o": [
+                  "仔細記錄與保存文物",
+                  "立刻丟棄文物",
+                  "把陵墓改成機場"
+            ],
+            "a": 0,
+            "e": "卡特團隊花費多年進行記錄、編號、保存與整理，這讓發現具有重要研究價值。"
+      },
+      {
+            "q": "圖坦卡門陵墓中最知名的文物之一是什麼？",
+            "o": [
+                  "黃金面具",
+                  "飛行者一號",
+                  "諾貝爾遺囑原稿"
+            ],
+            "a": 0,
+            "e": "圖坦卡門黃金面具是古埃及文物中最具代表性的作品之一。"
+      },
+      {
+            "q": "霍華德・卡特的考古故事最能代表哪種能力？",
+            "o": [
+                  "耐心觀察與精準記錄",
+                  "只靠速度取勝",
+                  "完全不需要證據"
+            ],
+            "a": 0,
+            "e": "考古工作需要長期耐心、細節觀察與完整記錄，卡特的故事正能呈現這些能力。"
+      }
+];
+
+    const hardQuestions = [
+      {
+            "q": "萊特兄弟的貢獻為何不只是「讓飛機離地」？",
+            "o": [
+                  "因為他們建立了可操控飛行的關鍵方法",
+                  "因為他們只研究紙飛機",
+                  "因為他們沒有做過實驗"
+            ],
+            "a": 0,
+            "e": "早期飛行的難題不只是升空，而是如何穩定控制。萊特兄弟的三軸控制讓飛行器更接近實用。"
+      },
+      {
+            "q": "萊特兄弟使用風洞測試機翼，最能體現哪種科學方法？",
+            "o": [
+                  "用實驗數據修正設計",
+                  "只依靠想像不驗證",
+                  "完全照抄舊資料"
+            ],
+            "a": 0,
+            "e": "他們透過實驗發現舊有資料不夠準確，於是用測量結果修正飛行器設計。"
+      },
+      {
+            "q": "萊特兄弟從腳踏車店經驗延伸到飛行研究，最能說明什麼？",
+            "o": [
+                  "跨領域經驗可以帶來創新",
+                  "腳踏車一定會變成飛機",
+                  "飛行研究不需要機械知識"
+            ],
+            "a": 0,
+            "e": "腳踏車的平衡、機械傳動與維修經驗，幫助他們用不同角度思考飛行控制問題。"
+      },
+      {
+            "q": "約翰・葛倫要求凱瑟琳・強森確認電腦計算結果，代表什麼意義？",
+            "o": [
+                  "關鍵任務需要專業判斷與交叉驗證",
+                  "人類完全不需要學數學",
+                  "電腦結果不能被任何人檢查"
+            ],
+            "a": 0,
+            "e": "這個故事說明，科技工具很重要，但專業人士的理解、判斷與驗證同樣不可或缺。"
+      },
+      {
+            "q": "凱瑟琳・強森爭取參與任務討論，最主要的原因是什麼？",
+            "o": [
+                  "了解完整任務才能做出更準確的計算",
+                  "她只想參加會議",
+                  "計算工作不需要背景資訊"
+            ],
+            "a": 0,
+            "e": "她知道計算不是孤立工作，必須理解任務目標、條件與風險，才能提供可靠結果。"
+      },
+      {
+            "q": "凱瑟琳・強森的職涯故事，最適合用來討論哪個主題？",
+            "o": [
+                  "專業能力、平權與科學貢獻",
+                  "單純的運氣故事",
+                  "古埃及王室生活"
+            ],
+            "a": 0,
+            "e": "她在種族與性別限制下仍以實力參與重要任務，是科學史與平權教育的重要人物。"
+      },
+      {
+            "q": "諾貝爾從發明炸藥到設立獎項，最適合引導學生思考哪個問題？",
+            "o": [
+                  "科技發明應如何承擔社會責任",
+                  "發明只要有威力就足夠",
+                  "科學與人類社會完全無關"
+            ],
+            "a": 0,
+            "e": "諾貝爾的故事適合討論科技的雙面性：技術能推動工程，也需要被負責任地使用。"
+      },
+      {
+            "q": "諾貝爾熱愛文學與多國語言，這個事實最能說明什麼？",
+            "o": [
+                  "科學家也可能擁有人文素養",
+                  "發明家不能讀文學",
+                  "語言能力與創造力無關"
+            ],
+            "a": 0,
+            "e": "諾貝爾不只是工程與化學領域的人物，也關心文學與思想，展現跨領域特質。"
+      },
+      {
+            "q": "諾貝爾獎用財產支持後世研究與貢獻，最能表現哪種價值？",
+            "o": [
+                  "把個人成就轉化為長遠公共影響",
+                  "只追求個人名聲",
+                  "完全否定科學研究"
+            ],
+            "a": 0,
+            "e": "諾貝爾獎延續至今，顯示一個人的資源與理念可以影響後世許多領域。"
+      },
+      {
+            "q": "愛因斯坦在專利局工作，對他的思考訓練可能有何幫助？",
+            "o": [
+                  "訓練他分析發明原理與抽象模型",
+                  "讓他不需要研究物理",
+                  "讓他只會抄寫文件"
+            ],
+            "a": 0,
+            "e": "審查專利需要理解裝置如何運作，這可能幫助愛因斯坦培養清楚分析概念與模型的能力。"
+      },
+      {
+            "q": "愛因斯坦的思想實驗為何重要？",
+            "o": [
+                  "能用想像情境推導抽象科學問題",
+                  "能直接取代所有實驗",
+                  "只是一種遊戲，與科學無關"
+            ],
+            "a": 0,
+            "e": "思想實驗能把難以直接觀察的問題變成可推理的情境，是理解相對論的重要方法之一。"
+      },
+      {
+            "q": "愛因斯坦因光電效應獲獎，這件事常被用來提醒學生什麼？",
+            "o": [
+                  "他的重要貢獻不只相對論",
+                  "他從未研究光",
+                  "他主要是考古學家"
+            ],
+            "a": 0,
+            "e": "大眾常想到相對論，但愛因斯坦因光電效應獲諾貝爾獎，這也顯示他的研究範圍很廣。"
+      },
+      {
+            "q": "霍華德・卡特花多年整理圖坦卡門文物，最能說明考古工作的哪個本質？",
+            "o": [
+                  "考古重視保存、脈絡與證據",
+                  "考古只是在尋寶",
+                  "考古不需要記錄"
+            ],
+            "a": 0,
+            "e": "考古發現的價值不只在寶物本身，更在文物位置、保存狀態與歷史脈絡。"
+      },
+      {
+            "q": "卡特的繪畫能力為何對早期考古工作很有幫助？",
+            "o": [
+                  "能精準記錄壁畫、圖案與文物細節",
+                  "能讓飛機更穩定",
+                  "能製造炸藥"
+            ],
+            "a": 0,
+            "e": "在攝影與記錄技術尚未像今日普及時，精準繪圖是考古記錄的重要能力。"
+      },
+      {
+            "q": "圖坦卡門陵墓保存許多文物，對研究古埃及最大的價值是什麼？",
+            "o": [
+                  "提供了解王室生活、信仰與工藝的證據",
+                  "證明古埃及人發明飛機",
+                  "證明諾貝爾獎起源於埃及"
+            ],
+            "a": 0,
+            "e": "大量文物能幫助研究者理解古埃及王室生活、宗教信仰、藝術技術與喪葬文化。"
+      }
+];
+
+    const TOTAL_QUESTIONS = 15;
+    const EASY_COUNT = 10;
+    const HARD_COUNT = 5;
+    const SCORE_PER_QUESTION = 10;
+
+    let quizQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+    let shuffledOptions = [];
+    let correctIndex = 0;
+
+    const startBtn = document.getElementById("startBtn");
+    const startBtn2 = document.getElementById("startBtn2");
+    const restartTopBtn = document.getElementById("restartTopBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    const questionCounter = document.getElementById("questionCounter");
+    const scoreCounter = document.getElementById("scoreCounter");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+
+    const startScreen = document.getElementById("startScreen");
+    const questionScreen = document.getElementById("questionScreen");
+    const resultScreen = document.getElementById("resultScreen");
+
+    const levelBadge = document.getElementById("levelBadge");
+    const clueBadge = document.getElementById("clueBadge");
+    const questionText = document.getElementById("questionText");
+    const optionsBox = document.getElementById("optionsBox");
+    const feedbackPanel = document.getElementById("feedbackPanel");
+    const feedbackTitle = document.getElementById("feedbackTitle");
+    const answerLine = document.getElementById("answerLine");
+    const explainText = document.getElementById("explainText");
+    const nextArea = document.getElementById("nextArea");
+
+    const finalScore = document.getElementById("finalScore");
+    const finalComment = document.getElementById("finalComment");
+
+    function shuffleArray(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function sampleQuestions(sourceArray, count) {
+      return shuffleArray(sourceArray).slice(0, count);
+    }
+
+    function buildQuiz() {
+      const easySet = sampleQuestions(easyQuestions, EASY_COUNT).map(item => ({ ...item, level: "基礎題庫" }));
+      const hardSet = sampleQuestions(hardQuestions, HARD_COUNT).map(item => ({ ...item, level: "進階題庫" }));
+      return [...easySet, ...hardSet];
+    }
+
+    function resetState() {
+      quizQuestions = buildQuiz();
+      currentIndex = 0;
+      score = 0;
+      answered = false;
+      updateStatus();
+    }
+
+    function startChallenge() {
+      resetState();
+      startScreen.classList.add("hidden");
+      resultScreen.classList.add("hidden");
+      questionScreen.classList.remove("hidden");
+      showQuestion();
+    }
+
+    function showQuestion() {
+      answered = false;
+      feedbackPanel.classList.remove("show");
+      nextArea.classList.remove("show");
+      optionsBox.innerHTML = "";
+
+      const current = quizQuestions[currentIndex];
+
+      levelBadge.textContent = current.level;
+      clueBadge.textContent = `線索 ${currentIndex + 1} / ${TOTAL_QUESTIONS}`;
+      questionText.textContent = current.q;
+
+      shuffledOptions = shuffleArray(
+        current.o.map((text, originalIndex) => ({
+          text,
+          originalIndex
+        }))
+      );
+
+      correctIndex = shuffledOptions.findIndex(option => option.originalIndex === current.a);
+
+      shuffledOptions.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "option-btn";
+        button.type = "button";
+        button.dataset.index = index;
+        button.innerHTML = `
+          <span class="letter">${String.fromCharCode(65 + index)}</span>
+          <span>${escapeHTML(option.text)}</span>
+        `;
+        button.addEventListener("click", () => chooseAnswer(index));
+        optionsBox.appendChild(button);
+      });
+
+      updateStatus();
+    }
+
+    function chooseAnswer(selectedIndex) {
+      if (answered) return;
+
+      answered = true;
+      const current = quizQuestions[currentIndex];
+      const buttons = [...optionsBox.querySelectorAll(".option-btn")];
+      const isCorrect = selectedIndex === correctIndex;
+
+      if (isCorrect) {
+        score += SCORE_PER_QUESTION;
+      }
+
+      buttons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === correctIndex) {
+          button.classList.add("correct");
+        } else if (index === selectedIndex) {
+          button.classList.add("wrong");
+        } else {
+          button.classList.add("dimmed");
+        }
+      });
+
+      const correctLetter = String.fromCharCode(65 + correctIndex);
+      const correctText = shuffledOptions[correctIndex].text;
+
+      feedbackTitle.textContent = isCorrect ? "答對了！線索成功點亮" : "答錯了！線索需要重新判讀";
+      answerLine.textContent = `正確答案：${correctLetter}. ${correctText}`;
+      explainText.textContent = current.e;
+      feedbackPanel.classList.add("show");
+
+      nextBtn.textContent = currentIndex === TOTAL_QUESTIONS - 1 ? "查看結算" : "下一個挑戰";
+      nextArea.classList.add("show");
+
+      updateStatus();
+    }
+
+    function nextQuestion() {
+      if (!answered) return;
+
+      if (currentIndex >= TOTAL_QUESTIONS - 1) {
+        showResult();
+        return;
+      }
+
+      currentIndex++;
+      showQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showResult() {
+      questionScreen.classList.add("hidden");
+      resultScreen.classList.remove("hidden");
+      finalScore.textContent = score;
+
+      if (score >= 130) {
+        finalComment.textContent = "完美破案！你已經掌握大部分觀念。";
+      } else if (score >= 90) {
+        finalComment.textContent = "表現不錯！再複習幾個觀念，就能更穩。";
+      } else {
+        finalComment.textContent = "線索還有點混亂，重新挑戰一次，下一輪就能抓到關鍵重點。";
+      }
+
+      updateStatus(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function updateStatus(forceComplete = false) {
+      const answeredCount = forceComplete ? TOTAL_QUESTIONS : currentIndex + (answered ? 1 : 0);
+      const progressPercent = Math.round((answeredCount / TOTAL_QUESTIONS) * 100);
+
+      questionCounter.textContent = `${Math.min(answeredCount, TOTAL_QUESTIONS)} / ${TOTAL_QUESTIONS}`;
+      scoreCounter.textContent = score;
+      progressText.textContent = `${progressPercent}%`;
+      progressBar.style.width = `${progressPercent}%`;
+    }
+
+    function escapeHTML(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    startBtn.addEventListener("click", startChallenge);
+    startBtn2.addEventListener("click", startChallenge);
+    restartTopBtn.addEventListener("click", startChallenge);
+    restartBtn.addEventListener("click", startChallenge);
+    nextBtn.addEventListener("click", nextQuestion);
+
+    updateStatus();
+  </script>
+</body>
+</html>
